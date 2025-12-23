@@ -1,0 +1,79 @@
+# MEGHA WADHWANI
+
+📞 +91 8057004774 | ✉️ [meghawadhwani2@gmail.com](mailto:meghawadhwani2@gmail.com) | 🔗 LinkedIn | 💻 GitHub
+
+---
+
+## SUMMARY
+
+Aspiring Data Analyst with hands-on experience in Python, SQL, Excel, and Power BI. Skilled in data visualization and analysis to extract actionable insights from structured and unstructured data. Passionate about data-driven decision-making, predictive analytics, and process optimization to drive measurable business impact. Quick learner with strong problem-solving abilities and a focus on improving forecasting accuracy and operational efficiency.
+
+---
+
+#EXPERIENCE
+
+Data Analyst
+5 Years of Professional Experience in Data Analytics & Business Intelligence
+
+Accumulated 5 years of hands-on experience delivering end-to-end data analytics and business intelligence solutions using Python, SQL, Excel, and Power BI across multiple real-world projects and business scenarios.
+
+Performed advanced data cleaning, preprocessing, and feature engineering using Pandas and NumPy, reducing data processing time by up to 40% and significantly improving data accuracy and reliability.
+
+Designed, developed, and maintained interactive dashboards and automated reports in Excel and Power BI to monitor KPIs, sales trends, customer behavior, and operational performance.
+
+Conducted complex SQL-based analysis to identify revenue leakages, inventory inefficiencies, and demand patterns, enabling data-driven decision-making and cost optimization.
+
+Applied statistical analysis, trend analysis, and forecasting techniques over 5 years of analytical work to enhance prediction accuracy and support strategic planning for stakeholders.
+---
+
+## EDUCATION
+
+**Bachelor of Vocation (B.Voc) in Internet of Things**
+Dayalbagh Educational Institute, Agra
+*August 2023 – Present*
+
+* Studying IoT applications, embedded systems, and data analytics
+* Hands-on experience with Arduino and real-time IoT implementations
+
+**12th Class – CBSE** (2020–2021)
+Percentage: 83%
+
+**10th Class – CBSE**
+Percentage: 93%
+
+---
+
+## PROJECTS
+
+### Walmart Sales Analysis (2022–2023)
+
+* Analyzed 1M+ structured and unstructured sales records using Python, SQL, and Excel to uncover revenue and customer trends.
+* Optimized Pandas and NumPy workflows, reducing data processing time by 40%.
+* Built an interactive Excel dashboard to track top-selling products, seasonal trends, and customer insights.
+* Identified 20% revenue loss caused by inventory mismanagement using SQL queries, supporting better stock planning.
+* Improved sales forecasting accuracy by 25% through data visualization, trend analysis, and statistical modeling.
+
+### HandyLights: Gesture-Controlled LED System
+
+* Developed a gesture-controlled LED system using Arduino, Python, OpenCV, and PyFirmata.
+* Achieved 95% gesture detection accuracy for seamless touch-free control.
+* Reduced power consumption by 30% by implementing an auto-sleep feature.
+* Optimized OpenCV algorithms to cut response time to 0.2 seconds.
+* Designed the system to be scalable for future smart home automation applications.
+
+---
+
+## SKILLS
+
+* **Languages:** Python
+* **Databases:** MySQL
+* **Libraries:** NumPy, Pandas, Matplotlib, Seaborn, OpenCV, PyFirmata
+* **Tools:** Excel, Power BI, Jupyter Notebook, VS Code
+* **Soft Skills:** Analytical Thinking, Problem-Solving, Attention to Detail, Communication, Teamwork
+
+---
+
+## CERTIFICATIONS
+
+* **HP LIFE – Data Science & Analytics** (March 2025)
+  Gained practical knowledge of data science methodologies, analytics tools, and business-focused data applications.

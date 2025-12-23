@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireLens AI | Upload</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e3a8a, #06b6d4, #1e3a8a);
+      background-size: 300% 300%;
+      animation: gradientShift 10s ease infinite;
+      min-height: 100vh;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 70px;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.3);
+    }
+
+    nav h1 {
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    nav a {
+      color: #e2e8f0;
+      text-decoration: none;
+      margin-left: 30px;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px;
+    }
+
+    .form-card {
+      background: white;
+      color: #0f172a;
+      width: 550px;
+      padding: 45px 50px;
+      border-radius: 20px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+    }
+
+    .file-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px dashed #94a3b8;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .file-list span {
+      display: block;
+      background: #f1f5f9;
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border-left: 4px solid #06b6d4;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      background: linear-gradient(135deg, #2563eb, #06b6d4);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .alert {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .alert.error { background: #fee2e2; color: #b91c1c; }
+    .alert.success { background: #dcfce7; color: #166534; }
+
+    .progress-container {
+      display: none;
+      margin-top: 15px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      height: 12px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 12px;
+      width: 0%;
+      background: linear-gradient(135deg, #2563eb, #06b6d4);
+    }
+  </style>
+</head>
+
+<body>
+<link rel="stylesheet" href="/styles/brand.css">
+<header class="hl-header">
+  <div class="hl-brand">
+    <span class="hl-logo">HireLens AI</span>
+    <span class="hl-tagline">AI-Powered Resume Screening Platform</span>
+  </div>
+  <nav class="hl-nav">
+    <a href="/">Home</a>
+    <a href="/input">Criteria</a>
+    <a href="/dashboard">Dashboard</a>
+  </nav>
+</header>
+
+ 
+
+<div class="container">
+  <div class="form-card">
+    <h2>Upload Candidate Resumes (ZIP)</h2>
+
+    <form id="uploadForm">
+      <!-- AUTO HR ID -->
+      <input type="hidden" id="hr_id" name="hr_id">
+
+      <input type="file" id="resumeFile" class="file-input" accept=".zip,.pdf,.docx,.txt" multiple required>
+
+      <div class="file-list" id="fileList"></div>
+      <div class="alert" id="alertBox"></div>
+
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <button type="submit">Start Screening →</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById("uploadForm");
+const fileInput = document.getElementById("resumeFile");
+const fileList = document.getElementById("fileList");
+const alertBox = document.getElementById("alertBox");
+const progressContainer = document.getElementById("progressContainer");
+const progressBar = document.getElementById("progressBar");
+const hrInput = document.getElementById("hr_id");
+
+function getCookie(name) {
+  const v = document.cookie.split("; ").find(row => row.startsWith(name + "="));
+  return v ? decodeURIComponent(v.split("=")[1]) : null;
+}
+const criteria = JSON.parse(localStorage.getItem("criteria"));
+const hrId = getCookie("hr_id") || (criteria && criteria.hr_id) || localStorage.getItem("hr_id");
+if (!hrId) {
+  alert("⚠️ Please login and fill job criteria first!");
+  window.location.href = "/input";
+}
+hrInput.value = hrId;
+
+// Show selected file
+fileInput.addEventListener("change", () => {
+  fileList.innerHTML = "";
+  Array.from(fileInput.files).forEach(f => {
+    const span = document.createElement("span");
+    span.textContent = f.name;
+    fileList.appendChild(span);
+  });
+});
+
+// Submit
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  if (!fileInput.files.length) {
+    showAlert("Please select a ZIP file", "error");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("hr_id", hrId);
+  const files = Array.from(fileInput.files);
+  const hasOnlyOneZip = files.length === 1 && files[0].name.toLowerCase().endsWith(".zip");
+  if (hasOnlyOneZip) {
+    formData.append("zip_file", files[0]);
+  } else {
+    files.forEach(f => formData.append("files", f));
+  }
+
+  showAlert("Processing resumes...", "success");
+  startProgress();
+
+  try {
+    const res = await fetch("/upload/resumes", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+    localStorage.setItem("screening_result", JSON.stringify(data));
+
+    setTimeout(() => {
+      window.location.href = "/dashboard";
+    }, 1000);
+
+  } catch (err) {
+    console.error(err);
+    showAlert("Server error!", "error");
+  }
+});
+
+function startProgress() {
+  progressContainer.style.display = "block";
+  let width = 0;
+  const timer = setInterval(() => {
+    width += 25;
+    progressBar.style.width = width + "%";
+    if (width >= 100) clearInterval(timer);
+  }, 300);
+}
+
+function showAlert(msg, type) {
+  alertBox.textContent = msg;
+  alertBox.className = "alert " + type;
+  alertBox.style.display = "block";
+}
+</script>
+
+<footer class="hl-footer">© 2025 HireLens AI. Built by Jyoti Gola.</footer>
+</body>
+</html>

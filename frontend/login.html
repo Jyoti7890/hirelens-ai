@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireLens AI | Login</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(-45deg, #3b82f6, #06b6d4, #9333ea, #3b82f6);
+      background-size: 400% 400%;
+      animation: gradientFlow 8s ease infinite;
+    }
+    @keyframes gradientFlow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    .container { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px);
+                 border-radius: 20px; padding: 50px 45px; width: 380px; color: white;
+                 box-shadow: 0 0 25px rgba(255,255,255,0.15); text-align: center;
+                 animation: fadeIn 1.2s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(-30px);} to{opacity:1;transform:translateY(0);} }
+    h2 { font-size: 2rem; margin-bottom: 10px; }
+    p { color: rgba(255,255,255,0.85); margin-bottom: 30px; font-size: 0.95rem; }
+    .input-group { position: relative; margin-bottom: 25px; }
+    .input-group input { width: 100%; padding: 12px 14px; border: none; outline: none; border-radius: 8px;
+                         background: rgba(255,255,255,0.15); color: white; font-size: 1rem; }
+    .input-group label { position: absolute; left: 14px; top: 12px; color: rgba(255,255,255,0.7);
+                         font-size: 0.9rem; transition: 0.3s; pointer-events: none; }
+    .input-group input:focus + label,
+    .input-group input:valid + label { top: -8px; left: 10px; font-size: 0.75rem; color: #fff; }
+    button { width: 100%; background: white; color: #2563eb; border: none; padding: 13px;
+             border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer;
+             transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255,255,255,0.2); }
+    button:hover { background: #e0e7ff; transform: translateY(-2px); }
+    .link { margin-top: 20px; font-size: 0.9rem; color: rgba(255,255,255,0.9); text-decoration: none; display: block; transition: 0.3s; }
+    .link:hover { text-decoration: underline; }
+    .forgot { font-size: 0.85rem; color: rgba(255,255,255,0.8); text-decoration: none;
+              display: inline-block; margin-top: 5px; transition: 0.3s; }
+    .forgot:hover { color: white; }
+  </style>
+</head>
+
+<body>
+  <link rel="stylesheet" href="/styles/brand.css">
+  <div class="page-wrapper">
+    <header class="hl-header">
+      <div class="hl-brand">
+        <span class="hl-logo">HireLens AI</span>
+        <span class="hl-tagline">AI-Powered Resume Screening Platform</span>
+      </div>
+      <nav class="hl-nav">
+        <a href="/">Home</a>
+        <a href="/signup">Signup</a>
+       
+      </nav>
+    </header>
+    <main class="hl-main">
+      <div class="container">
+        <h2>Welcome Back</h2>
+        <p>Login to continue your AI recruitment journey ✨</p>
+
+        <form action="/auth/login" method="post">
+          <div class="input-group">
+            <input type="email" name="email" required />
+            <label>Email Address</label>
+          </div>
+
+          <div class="input-group">
+            <input type="password" name="password" required />
+            <label>Password</label>
+          </div>
+
+          <a href="/forgot-password" class="forgot">Forgot Password?</a>
+
+          <button type="submit">Login</button>
+        </form>
+
+        <a href="/signup" class="link">Don't have an account? Signup</a>
+      </div>
+    </main>
+    <footer class="hl-footer">© 2025 HireLens AI. Built by Jyoti Gola.</footer>
+  </div>
+  <script>
+    const form = document.querySelector('form[action="/auth/login"]');
+    form.addEventListener("submit", function (e) {
+      const emailInput = form.querySelector('input[name="email"]');
+      const email = emailInput ? emailInput.value : "";
+      localStorage.setItem("hr_email", email);
+      localStorage.setItem("hr_id", email);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireLens AI | Job Criteria</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* -------------------- GLOBAL -------------------- */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e3a8a, #06b6d4);
+      min-height: 100vh;
+    }
+
+    /* -------------------- LAYOUT -------------------- */
+    .page-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* -------------------- HEADER -------------------- */
+    .hl-header {
+      width: 100%;
+      padding: 16px 32px;
+      background: rgba(15, 23, 42, 0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+    }
+
+    .hl-brand {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hl-logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .hl-tagline {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .hl-nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+
+    .hl-nav a:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    /* -------------------- MAIN -------------------- */
+    .hl-main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 40px;
+      width: 520px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #0f172a;
+    }
+
+    label {
+      font-weight: 500;
+      margin-top: 15px;
+      display: block;
+      color: #0f172a;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg,#2563eb,#06b6d4);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(37,99,235,0.35);
+    }
+
+    /* -------------------- FOOTER -------------------- */
+    .hl-footer {
+      width: 100%;
+      text-align: center;
+      padding: 14px 0;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      background: rgba(15, 23, 42, 0.9);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-wrapper">
+
+    <!-- HEADER -->
+    <header class="hl-header">
+      <div class="hl-brand">
+        <span class="hl-logo">HireLens AI</span>
+        <span class="hl-tagline">AI-Powered Resume Screening Platform</span>
+      </div>
+      <nav class="hl-nav">
+        <a href="/">Home</a>
+        <a href="/upload">Upload</a>
+        <a href="/dashboard">Dashboard</a>
+      </nav>
+    </header>
+
+    <!-- MAIN -->
+    <main class="hl-main">
+      <div class="card">
+        <h2>Define Job Criteria</h2>
+
+        <form id="criteriaForm">
+          <input type="hidden" name="hr_id" id="hr_id">
+
+          <label>Job Description</label>
+          <textarea name="job_desc" required></textarea>
+
+          <label>Minimum Experience (Years)</label>
+          <input type="number" name="min_exp" required>
+
+          <label>Required Skills</label>
+          <input type="text" name="skills" required>
+
+          <label>Department</label>
+          <select name="department" required>
+            <option value="">Select</option>
+            <option>Software Development</option>
+            <option>Data Science</option>
+            <option>Machine Learning</option>
+            <option>Web Development</option>
+            <option>Cyber Security</option>
+            <option>Marketing</option>
+            <option>Finance</option>
+            <option>Human Resources</option>
+            <option>UI/UX Design</option>
+            <option>Cloud Computing</option>
+          </select>
+
+          <label>Minimum Match Score (%)</label>
+          <input type="number" name="min_score" min="0" max="100" required>
+
+          <button type="submit">Save & Continue</button>
+        </form>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="hl-footer">
+      © 2025 HireLens AI. Built by Jyoti Gola.
+    </footer>
+
+  </div>
+
+<script>
+document.getElementById("criteriaForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+
+  const hrId = localStorage.getItem("hr_id");
+  if (!hrId) {
+    window.location.href = "/login";
+    return;
+  }
+  formData.set("hr_id", hrId);
+
+  const res = await fetch("/criteria/save", {
+    method: "POST",
+    body: formData
+  });
+
+  if (!res.ok) {
+    alert("Error saving criteria");
+    return;
+  }
+
+  localStorage.setItem("criteria", JSON.stringify(Object.fromEntries(formData)));
+  window.location.href = "/upload";
+});
+</script>
+
+</body>
+</html>

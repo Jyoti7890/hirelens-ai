@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireLens AI | Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e3a8a, #06b6d4, #1e3a8a);
+      background-size: 300% 300%;
+      animation: gradientShift 10s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #fff;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 70px;
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 3px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    nav h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #e2e8f0;
+      font-weight: 500;
+      margin-left: 30px;
+      font-size: 16px;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+
+    nav a:hover {
+      color: #38bdf8;
+      text-shadow: 0 0 10px #38bdf8;
+    }
+
+    .container {
+      flex: 1;
+      padding: 40px 80px;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: 700;
+      font-size: 40px;
+      margin-bottom: 50px;
+      color: #f1f5f9;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 25px;
+      margin-bottom: 50px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      color: #000;
+    }
+
+    .card h3 { font-size: 20px; color: #2563eb; margin-bottom: 10px; }
+    .card p { font-size: 30px; font-weight: 700; color: #000; margin-bottom: 15px; }
+
+    .download-btn {
+      background: linear-gradient(135deg, #2563eb, #06b6d4);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+    }
+
+    .table-container {
+      background: #ffffff;
+      color: #000;
+      border-radius: 15px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.4);
+      padding: 25px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 14px 18px; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f1f5f9; font-weight: 600; color: #0f172a; position: sticky; top: 0; }
+
+    .status { padding: 5px 10px; border-radius: 8px; font-weight: 600; }
+    .status.shortlisted { background: #bbf7d0; color: #065f46; }
+    .status.rejected { background: #fecaca; color: #7f1d1d; }
+    .status.pending { background: #fde68a; color: #78350f; }
+
+    .next-btn {
+      display: block;
+      margin: 35px auto 0;
+      background: linear-gradient(135deg, #2563eb, #06b6d4);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 12px 30px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <link rel="stylesheet" href="/styles/brand.css">
+
+  <header class="hl-header">
+    <div class="hl-brand">
+      <span class="hl-logo">HireLens AI</span>
+      <span class="hl-tagline">AI-Powered Resume Screening Platform</span>
+    </div>
+    <nav class="hl-nav">
+      <a href="/">Home</a>
+      <a href="/input">Criteria</a>
+      <a href="/upload">Upload</a>
+      <a href="#" id="logout-link">Logout</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Screening Dashboard</h2>
+
+    <div class="stats">
+      <div class="card">
+        <h3>Total Resumes</h3>
+        <p id="total-resumes">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Shortlisted</h3>
+        <p id="shortlisted-count">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Rejected</h3>
+        <p id="rejected-count">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Pending</h3>
+        <p id="pending-count">0</p>
+      </div>
+    </div>
+    <div style="text-align:center; margin-bottom:20px;">
+      <button class="download-btn" onclick="bulkDownload()">Download Selected (ZIP)</button>
+      <button class="download-btn" onclick="bulkDownloadPending()">Download Pending Resumes (ZIP)</button>
+      <button class="download-btn" onclick="bulkDownloadRejected()">Download Rejected Resumes (ZIP)</button>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Candidate Name</th>
+            <th>Experience</th>
+            <th>Skills</th>
+            <th>Missing Skills</th>
+            <th>Match Score</th>
+            <th>Status</th>
+            <th>Resume</th>
+          </tr>
+        </thead>
+        <tbody id="resume-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+    function getCookie(name) {
+        const v = document.cookie.split("; ").find(row => row.startsWith(name + "="));
+        return v ? decodeURIComponent(v.split("=")[1]) : null;
+    }
+    const hrId = getCookie("hr_id") || localStorage.getItem("hr_id");
+    if (!hrId) {
+        window.location.href = "/login";
+        return;
+    }
+
+    async function loadDashboard() {
+        try {
+            const summaryRes = await fetch(`/dashboard/summary?hr_id=${encodeURIComponent(hrId)}`);
+            const summary = await summaryRes.json();
+
+            document.getElementById("total-resumes").textContent = summary.total_resumes || 0;
+            document.getElementById("shortlisted-count").textContent = summary.selected_resumes || 0;
+            document.getElementById("rejected-count").textContent = summary.rejected_resumes || 0;
+            document.getElementById("pending-count").textContent =
+                (summary.total_resumes || 0) - (summary.selected_resumes || 0) - (summary.rejected_resumes || 0);
+
+            const topRes = await fetch(`/dashboard/top-resumes?hr_id=${encodeURIComponent(hrId)}`);
+            let top = await topRes.json();
+            if (!Array.isArray(top) || top.length === 0) {
+                const cached = JSON.parse(localStorage.getItem("screening_result"));
+                top = (cached && cached.results) ? cached.results.filter(r => (r.status || "").toLowerCase() === "selected") : [];
+            }
+
+            const tableBody = document.getElementById("resume-table-body");
+            tableBody.innerHTML = "";
+            (top || []).forEach(item => {
+                const skills = Array.isArray(item.matched_skills) ? item.matched_skills.join(", ") : (item.matched_skills || "");
+                
+                // Extract printable filename from URL if name is missing
+                let displayName = item.file || item.candidate_name || "Candidate";
+                if (displayName === "Candidate" && (item.resume_file || item.resume_url)) {
+                    try {
+                        const urlStr = item.resume_file || item.resume_url;
+                        // Handle standard URL or path
+                        const namePart = urlStr.split('?')[0].split('/').pop();
+                        if (namePart) displayName = decodeURIComponent(namePart);
+                    } catch (e) {
+                        console.warn("Could not parse filename", e);
+                    }
+                }
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${displayName}</td>
+                    <td>${Number(item.experience || 0).toFixed(1)} yrs</td>
+                    <td>${skills || "N/A"}</td>
+                    <td>${Array.isArray(item.missing_skills) && item.missing_skills.length ? item.missing_skills.join(", ") : "All required skills matched"}</td>
+                    <td>${Number(item.final_score || 0).toFixed(2)}%</td>
+                    <td>
+                        <span class="status ${String(item.status || "Rejected").toLowerCase()}">${item.status || "Rejected"}</span>
+                    </td>
+                    <td>
+                        <button class="download-btn" onclick="downloadResume('${item.resume_file || item.resume_url || ""}')">
+                            Download
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error("Error loading dashboard:", error);
+        }
+    }
+
+    await loadDashboard();
+    setInterval(loadDashboard, 3000);
+});
+
+function downloadResume(url) {
+    if (!url) {
+        alert("Resume file not found!");
+        return;
+    }
+    window.open(url, "_blank");
+}
+
+async function bulkDownload() {
+    const hrId = localStorage.getItem("hr_id");
+    if (!hrId) {
+        window.location.href = "/login";
+        return;
+    }
+    window.open(`/dashboard/download-selected?hr_id=${encodeURIComponent(hrId)}`, "_blank");
+}
+
+async function bulkDownloadPending() {
+    const hrId = localStorage.getItem("hr_id");
+    if (!hrId) {
+        window.location.href = "/login";
+        return;
+    }
+    window.open(`/dashboard/download-pending?hr_id=${encodeURIComponent(hrId)}`, "_blank");
+}
+
+async function bulkDownloadRejected() {
+    const hrId = localStorage.getItem("hr_id");
+    if (!hrId) {
+        window.location.href = "/login";
+        return;
+    }
+    window.open(`/dashboard/download-rejected?hr_id=${encodeURIComponent(hrId)}`, "_blank");
+}
+
+document.getElementById("logout-link").addEventListener("click", function (e) {
+    e.preventDefault();
+    localStorage.removeItem("hr_email");
+    localStorage.removeItem("hr_id");
+    localStorage.removeItem("criteria");
+    localStorage.removeItem("screening_result");
+    window.location.href = "/auth/logout";
+});
+</script>
+<footer class="hl-footer">© 2025 HireLens AI. Built by Jyoti Gola.</footer>
+
+</body>
+</html>

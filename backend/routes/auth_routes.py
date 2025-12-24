@@ -175,73 +175,33 @@ def reset_password_finish(
 ):
     try:
         if new_password != confirm_password:
-             return HTMLResponse(
-                "<script>alert('Passwords do not match'); history.back();</script>"
-            )
+             return JSONResponse(status_code=400, content={"error": "Passwords do not match"})
             
-        # 1. Update in Supabase Auth (Requires Admin Client)
-        # We need the User UID. admin.list_users() is expensive if many users, keeping it simple for now.
-        # Alternatively, if we store UUID in public.users, we could use that.
-        # For now, searching by email via admin list (inefficient but works for small scale) needed?
-        # Supabase Admin API usually has updateUserById, not ByEmail.
+        # 1. Check existence in public.users
+        users_res = supabase.table("users").select("id").eq("email", email).execute()
         
-        # Trick: We can't easily get UID by email without signing in or listing all.
-        # Let's try listing users filtered by email?
-        # supabase_admin.auth.admin.list_users() ? 
-        
-        # Use a more robust way: 
-        # Actually, if we are in a 'No Email Verification' mode, we might just be able to use the Service Key 
-        # to update public.users password (if we use that for login... but we switched Login to use Supabase Auth).
-        # So we MUST update Supabase Auth.
-        
-        # Let's try to find the user ID from `auth.users` via RPC or if allowed. 
-        # But we can't access `auth` schema from client directly unless using service role.
-        
-        # WORKAROUND: We iterate/search. Or we rely on `users` table having the correct UUID if we stored it?
-        # existing `users` table doesn't seem to have `auth_id/uuid` column based on code I saw (just email, password).
-        # We will assume we can't easily get UUID. 
-        
-        # Actually, let's try `supabase_admin.auth.admin.get_user_by_email(email)`? Not standard in Python SDK?
-        # Python SDK `gotrue` admin has `list_users`.
-        
-        # Let's try to proceed with public.users update FIRST (for legacy compatibility) 
-        # AND try to update Auth if we can find the ID.
-        
-        # Update custom table
+        if not users_res.data:
+            return JSONResponse(status_code=400, content={"error": "Signup first"})
+            
+        # 2. Update Password in public.users (Validation: Exact column name match)
         supabase.table("users").update({"password": new_password}).eq("email", email).execute()
 
-        # Update Auth (Best Effort)
+        # 3. Update Auth (Best Effort - for Admin sync)
         try:
-            # Just listing users to find ID - WARNING: Slow for many users
-            # If we had the ID, we would do: supabase_admin.auth.admin.update_user_by_id(uid, {"password": new_password})
-            
-            # Since we can't easily get the UID without a lookup, and we are pressed for time/code:
-            # We will rely on the fact that if we can't update Auth, the NEXT Login will fail 
-            # if we switched Login to use Supabase Auth exclusively.
-            
-            # Let's try to see if we can get user by email?
-            # Creating a fake sign-in? No, we don't know old password.
-            
-            # Critical: This flow is blocked if we can't update Auth password.
-            # I will write code to List users and find email.
-            users_list = supabase_admin.auth.admin.list_users(per_page=1000) # Simple limit
-            target_user = next((u for u in users_list if u.email == email), None)
-            
-            if target_user:
-                supabase_admin.auth.admin.update_user_by_id(target_user.id, {"password": new_password})
-            else:
-                logger.warning(f"Could not find Auth User for {email} to update password")
-                
-        except Exception as admin_err:
-             logger.error(f"Failed to update Auth password: {admin_err}")
-             # We might want to warn user, but let's return Success if DB update worked? 
-             # No, if Login uses Auth, this is critical.
-             pass
+             # Try to find user in Auth to update
+             users_list = supabase_admin.auth.admin.list_users(per_page=1000)
+             target_user = next((u for u in users_list if u.email == email), None)
+             if target_user:
+                 supabase_admin.auth.admin.update_user_by_id(target_user.id, {"password": new_password})
+        except Exception as e:
+             logger.warning(f"Auth password update failed: {e}")
+             # Non-blocking
 
-        return HTMLResponse(
-            "<script>alert('Password updated successfully. Please login.'); window.location='/login';</script>"
+        return JSONResponse(
+            status_code=200, 
+            content={"message": "Password updated successfully!", "redirect": "/login"}
         )
 
     except Exception as e:
         logger.error(f"Reset Password Error: {e}")
-        return HTMLResponse("<script>alert('Reset password failed'); window.location='/login';</script>")
+        return JSONResponse(status_code=500, content={"error": "System error during reset"})

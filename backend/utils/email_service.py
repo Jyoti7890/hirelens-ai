@@ -2,65 +2,75 @@ import os
 import smtplib
 import logging
 import asyncio
+import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
-
-# Configure logger
+# Logger (Render compatible)
 logger = logging.getLogger("hirelens")
+
 
 def _send_smtp_email_sync(receiver_email: str, otp: int) -> bool:
     """
-    Synchronous function to send email using SMTP.
-    This is meant to be run in a separate thread to avoid blocking the asyncio event loop.
+    Synchronous SMTP email sender (Brevo).
+    Runs inside thread executor to avoid blocking asyncio loop.
     """
-    smtp_host = "smtp-relay.brevo.com"
-    smtp_port = 587
-    
-    # Get credentials from environment variables
-    # User requested to use "Brevo API Key" as Username/Password implies strict dependency on env vars
-    # We will look for standard SMTP_USERNAME/SMTP_PASSWORD variables
-    smtp_username = os.getenv("SMTP_USERNAME")
-    smtp_password = os.getenv("SMTP_PASSWORD")
-    
-    sender_email = os.getenv("SENDER_EMAIL", "noreply@hirelens.ai")
-    sender_name = os.getenv("SENDER_NAME", "HireLens AI")
 
-    if not smtp_username or not smtp_password:
-        logger.error("SMTP credentials missing: SMTP_USERNAME or SMTP_PASSWORD not set")
+    SMTP_HOST = "smtp-relay.brevo.com"
+    SMTP_PORT = 587
+
+    SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+    SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+    SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+    SENDER_NAME = os.getenv("SENDER_NAME", "HireLens AI")
+
+    # ---- Mandatory safety checks ----
+    if not SMTP_USERNAME or not SMTP_PASSWORD:
+        logger.error("SMTP credentials missing")
+        return False
+
+    if not SENDER_EMAIL:
+        logger.error("SENDER_EMAIL not set or not verified in Brevo")
         return False
 
     try:
-        # Create message
+        # ---- Build Email ----
         msg = MIMEMultipart()
-        msg["From"] = f"{sender_name} <{sender_email}>"
+        msg["From"] = f"{SENDER_NAME} <{SENDER_EMAIL}>"
         msg["To"] = receiver_email
-        msg["Subject"] = "Your Verification OTP"
+        msg["Subject"] = "Your OTP Verification Code"
 
-        body = f"Your OTP is: {otp}\n\nThis code will expire in 5 minutes."
+        body = (
+            f"Your One-Time Password (OTP) is:\n\n"
+            f"{otp}\n\n"
+            f"This code is valid for 5 minutes.\n"
+            f"If you did not request this, please ignore this email."
+        )
+
         msg.attach(MIMEText(body, "plain"))
 
-        # Connect to SMTP server
-        with smtplib.SMTP(smtp_host, smtp_port) as server:
-            server.starttls()  # Upgrade connection to secure
-            server.login(smtp_username, smtp_password)
+        # ---- Secure SMTP connection ----
+        context = ssl.create_default_context()
+
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
+            server.starttls(context=context)
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
             server.send_message(msg)
-            
+
         logger.info(f"OTP email sent successfully to {receiver_email}")
         return True
 
     except Exception as e:
-        logger.error(f"Failed to send OTP email via Brevo SMTP: {e}")
+        logger.exception("Failed to send OTP email via Brevo SMTP")
         return False
+
 
 async def send_otp_email(receiver_email: str, otp: int) -> bool:
     """
-    Asynchronous wrapper for sending OTP email.
-    Runs the synchronous SMTP call in a separate thread.
+    Async wrapper for SMTP email sending.
+    Uses thread executor to keep FastAPI event loop non-blocking.
     """
     loop = asyncio.get_running_loop()
-    # run_in_executor with None uses the default ThreadPoolExecutor
-    return await loop.run_in_executor(None, _send_smtp_email_sync, receiver_email, otp)
+    return await loop.run_in_executor(
+        None, _send_smtp_email_sync, receiver_email, otp
+    )

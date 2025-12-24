@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,9 +10,17 @@
 
   <style>
     @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
     }
 
     body {
@@ -83,12 +92,22 @@
       border-radius: 15px;
       padding: 25px;
       text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
       color: #000;
     }
 
-    .card h3 { font-size: 20px; color: #2563eb; margin-bottom: 10px; }
-    .card p { font-size: 30px; font-weight: 700; color: #000; margin-bottom: 15px; }
+    .card h3 {
+      font-size: 20px;
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 30px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 15px;
+    }
 
     .download-btn {
       background: linear-gradient(135deg, #2563eb, #06b6d4);
@@ -104,20 +123,51 @@
       background: #ffffff;
       color: #000;
       border-radius: 15px;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
       padding: 25px;
       max-height: 400px;
       overflow-y: auto;
     }
 
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 14px 18px; border-bottom: 1px solid #e2e8f0; }
-    th { background: #f1f5f9; font-weight: 600; color: #0f172a; position: sticky; top: 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-    .status { padding: 5px 10px; border-radius: 8px; font-weight: 600; }
-    .status.shortlisted { background: #bbf7d0; color: #065f46; }
-    .status.rejected { background: #fecaca; color: #7f1d1d; }
-    .status.pending { background: #fde68a; color: #78350f; }
+    th,
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background: #f1f5f9;
+      font-weight: 600;
+      color: #0f172a;
+      position: sticky;
+      top: 0;
+    }
+
+    .status {
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .status.shortlisted {
+      background: #bbf7d0;
+      color: #065f46;
+    }
+
+    .status.rejected {
+      background: #fecaca;
+      color: #7f1d1d;
+    }
+
+    .status.pending {
+      background: #fde68a;
+      color: #78350f;
+    }
 
     .next-btn {
       display: block;
@@ -186,14 +236,14 @@
       cursor: pointer;
       transition: color 0.3s;
     }
-    
+
     .close-btn:hover {
       color: #ef4444;
     }
 
     .analytics-header {
       margin-bottom: 30px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 15px;
     }
 
@@ -209,7 +259,7 @@
       padding: 20px;
       border-radius: 12px;
       text-align: center;
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .metric-card h4 {
@@ -239,7 +289,7 @@
       background: rgba(255, 255, 255, 0.03);
       padding: 20px;
       border-radius: 15px;
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
       min-height: 300px;
     }
 
@@ -249,7 +299,7 @@
       color: #e2e8f0;
       text-align: center;
     }
-    
+
     /* Nav Button Style */
     .nav-btn-analytics {
       background: linear-gradient(90deg, #2563eb, #7c3aed);
@@ -338,7 +388,7 @@
   <div id="analyticsModal" class="modal-overlay">
     <div class="modal-content">
       <span class="close-btn" onclick="closeAnalytics()">&times;</span>
-      
+
       <div class="analytics-header">
         <h2>Recruitment Analytics</h2>
       </div>
@@ -374,40 +424,43 @@
           <canvas id="skillsChart"></canvas>
         </div>
       </div>
-      
+
       <!-- JD Match Progress -->
       <div class="chart-container" style="margin-top: 20px; text-align: center;">
-         <h5>Average JD Match Score</h5>
-         <div style="position: relative; height: 30px; background: rgba(255,255,255,0.1); border-radius: 15px; margin: 20px 0; overflow: hidden;">
-             <div id="jd-match-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #06b6d4, #2563eb); text-align: right; padding-right: 10px; line-height: 30px; font-weight: bold; transition: width 1s ease;">
-                 <span id="jd-match-text">0%</span>
-             </div>
-         </div>
-         <p style="color: #94a3b8; font-size: 14px;">Average match percentage of all analyzed resumes against the job description.</p>
+        <h5>Average JD Match Score</h5>
+        <div
+          style="position: relative; height: 30px; background: rgba(255,255,255,0.1); border-radius: 15px; margin: 20px 0; overflow: hidden;">
+          <div id="jd-match-bar"
+            style="width: 0%; height: 100%; background: linear-gradient(90deg, #06b6d4, #2563eb); text-align: right; padding-right: 10px; line-height: 30px; font-weight: bold; transition: width 1s ease;">
+            <span id="jd-match-text">0%</span>
+          </div>
+        </div>
+        <p style="color: #94a3b8; font-size: 14px;">Average match percentage of all analyzed resumes against the job
+          description.</p>
       </div>
 
     </div>
   </div>
 
-<script>
-// Analytics Logic
-let statusChartInstance = null;
-let skillsChartInstance = null;
+  <script>
+    // Analytics Logic
+    let statusChartInstance = null;
+    let skillsChartInstance = null;
 
-async function openAnalytics() {
-    const hrId = localStorage.getItem("hr_id") || document.cookie.split("; ").find(row => row.startsWith("hr_id="))?.split("=")[1];
-    
-    if (!hrId) {
+    async function openAnalytics() {
+      const hrId = localStorage.getItem("hr_id") || document.cookie.split("; ").find(row => row.startsWith("hr_id="))?.split("=")[1];
+
+      if (!hrId) {
         alert("Please login first");
         return;
-    }
+      }
 
-    document.getElementById("analyticsModal").classList.add("active");
-    
-    try {
+      document.getElementById("analyticsModal").classList.add("active");
+
+      try {
         const res = await fetch(`/dashboard/analytics?hr_id=${encodeURIComponent(hrId)}`);
         const data = await res.json();
-        
+
         // Update Metrics
         document.getElementById("an-total").textContent = data.summary.total;
         document.getElementById("an-selected").textContent = data.summary.selected;
@@ -424,126 +477,139 @@ async function openAnalytics() {
         renderStatusChart(data.charts.status_distribution);
         renderSkillsChart(data.charts.top_skills);
 
-    } catch (e) {
+      } catch (e) {
         console.error("Analytics Load Error", e);
         alert("Failed to load analytics data.");
+      }
     }
-}
 
-function closeAnalytics() {
-    document.getElementById("analyticsModal").classList.remove("active");
-}
+    function closeAnalytics() {
+      document.getElementById("analyticsModal").classList.remove("active");
+    }
 
-function renderStatusChart(dist) {
-    const ctx = document.getElementById('statusChart').getContext('2d');
-    
-    if (statusChartInstance) statusChartInstance.destroy();
+    function renderStatusChart(dist) {
+      const ctx = document.getElementById('statusChart').getContext('2d');
 
-    statusChartInstance = new Chart(ctx, {
+      if (statusChartInstance) statusChartInstance.destroy();
+
+      statusChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Selected', 'Rejected', 'Pending'],
-            datasets: [{
-                data: [dist.selected, dist.rejected, dist.pending],
-                backgroundColor: ['#4ade80', '#f87171', '#fcd34d'],
-                borderWidth: 0
-            }]
+          labels: ['Selected', 'Rejected', 'Pending'],
+          datasets: [{
+            data: [dist.selected, dist.rejected, dist.pending],
+            backgroundColor: ['#4ade80', '#f87171', '#fcd34d'],
+            borderWidth: 0
+          }]
         },
         options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'bottom', labels: { color: 'white' } }
-            }
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: 'white' } }
+          }
         }
-    });
-}
+      });
+    }
 
-function renderSkillsChart(skills) {
-    const ctx = document.getElementById('skillsChart').getContext('2d');
-    
-    if (skillsChartInstance) skillsChartInstance.destroy();
+    function renderSkillsChart(skills) {
+      const ctx = document.getElementById('skillsChart').getContext('2d');
 
-    skillsChartInstance = new Chart(ctx, {
+      if (skillsChartInstance) skillsChartInstance.destroy();
+
+      skillsChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: skills.map(s => s.skill),
-            datasets: [{
-                label: 'Mention Count',
-                data: skills.map(s => s.count),
-                backgroundColor: '#60a5fa',
-                borderColor: '#3b82f6',
-                borderWidth: 1
-            }]
+          labels: skills.map(s => s.skill),
+          datasets: [{
+            label: 'Mention Count',
+            data: skills.map(s => s.count),
+            backgroundColor: '#60a5fa',
+            borderColor: '#3b82f6',
+            borderWidth: 1
+          }]
         },
         options: {
-            responsive: true,
-            scales: {
-                y: { beginAtZero: true, ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
-                x: { ticks: { color: 'white' }, grid: { display: false } }
-            },
-            plugins: {
-                legend: { display: false }
-            }
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true, ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+            x: { ticks: { color: 'white' }, grid: { display: false } }
+          },
+          plugins: {
+            legend: { display: false }
+          }
         }
-    });
-}
+      });
+    }
 
-document.addEventListener("DOMContentLoaded", async function () {
-    function getCookie(name) {
+    document.addEventListener("DOMContentLoaded", async function () {
+      function getCookie(name) {
         const v = document.cookie.split("; ").find(row => row.startsWith(name + "="));
         return v ? decodeURIComponent(v.split("=")[1]) : null;
-    }
-    const hrId = getCookie("hr_id") || localStorage.getItem("hr_id");
-    if (!hrId) {
+      }
+      const hrId = getCookie("hr_id") || localStorage.getItem("hr_id");
+      if (!hrId) {
         window.location.href = "/login";
         return;
-    }
+      }
 
-    async function loadDashboard() {
+      async function loadDashboard() {
         try {
-            const summaryRes = await fetch(`/dashboard/summary?hr_id=${encodeURIComponent(hrId)}`);
-            const summary = await summaryRes.json();
+          const summaryRes = await fetch(`/dashboard/summary?hr_id=${encodeURIComponent(hrId)}`);
+          const summary = await summaryRes.json();
 
-            document.getElementById("total-resumes").textContent = summary.total_resumes || 0;
-            document.getElementById("shortlisted-count").textContent = summary.selected_resumes || 0;
-            document.getElementById("rejected-count").textContent = summary.rejected_resumes || 0;
-            document.getElementById("pending-count").textContent =
-                (summary.total_resumes || 0) - (summary.selected_resumes || 0) - (summary.rejected_resumes || 0);
+          document.getElementById("total-resumes").textContent = summary.total_resumes || 0;
+          document.getElementById("shortlisted-count").textContent = summary.selected_resumes || 0;
+          document.getElementById("rejected-count").textContent = summary.rejected_resumes || 0;
+          document.getElementById("pending-count").textContent =
+            (summary.total_resumes || 0) - (summary.selected_resumes || 0) - (summary.rejected_resumes || 0);
 
-            const topRes = await fetch(`/dashboard/top-resumes?hr_id=${encodeURIComponent(hrId)}`);
-            let top = await topRes.json();
-            if (!Array.isArray(top) || top.length === 0) {
-                const cached = JSON.parse(localStorage.getItem("screening_result"));
-                top = (cached && cached.results) ? cached.results.filter(r => (r.status || "").toLowerCase() === "selected") : [];
+          const topRes = await fetch(`/dashboard/top-resumes?hr_id=${encodeURIComponent(hrId)}`);
+          let top = await topRes.json();
+          if (!Array.isArray(top) || top.length === 0) {
+            const cached = JSON.parse(localStorage.getItem("screening_result"));
+            top = (cached && cached.results) ? cached.results.filter(r => (r.status || "").toLowerCase() === "selected") : [];
+          }
+
+          const tableBody = document.getElementById("resume-table-body");
+          tableBody.innerHTML = "";
+          (top || []).forEach(item => {
+            const skills = Array.isArray(item.matched_skills) ? item.matched_skills.join(", ") : (item.matched_skills || "");
+
+            // Extract printable filename from URL if name is missing
+            let displayName = item.file || item.candidate_name || "Candidate";
+            if (displayName === "Candidate" && (item.resume_file || item.resume_url)) {
+              try {
+                const urlStr = item.resume_file || item.resume_url;
+                const namePart = urlStr.split('?')[0].split('/').pop();
+                if (namePart) displayName = decodeURIComponent(namePart);
+              } catch (e) {
+                console.warn("Could not parse filename", e);
+              }
             }
 
-            const tableBody = document.getElementById("resume-table-body");
-            tableBody.innerHTML = "";
-            (top || []).forEach(item => {
-                const skills = Array.isArray(item.matched_skills) ? item.matched_skills.join(", ") : (item.matched_skills || "");
-                
-                // Extract printable filename from URL if name is missing
-                let displayName = item.file || item.candidate_name || "Candidate";
-                if (displayName === "Candidate" && (item.resume_file || item.resume_url)) {
-                    try {
-                        const urlStr = item.resume_file || item.resume_url;
-                        // Handle standard URL or path
-                        const namePart = urlStr.split('?')[0].split('/').pop();
-                        if (namePart) displayName = decodeURIComponent(namePart);
-                    } catch (e) {
-                        console.warn("Could not parse filename", e);
-                    }
-                }
+            const statusLower = String(item.status || "Rejected").toLowerCase();
+            let statusClass = "rejected";
+            if (statusLower === "selected") statusClass = "shortlisted";
+            if (statusLower === "pending") statusClass = "pending";
 
-                const row = document.createElement("tr");
-                row.innerHTML = `
+            // If Pending, show error from extracted_text if available
+            let errorTooltip = "";
+            if (statusLower === "pending" && item.extracted_text && item.extracted_text.startsWith("PROCESSING ERROR:")) {
+              errorTooltip = `title="${item.extracted_text}" style="cursor: help; border-bottom: 1px dotted #78350f;"`;
+            }
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
                     <td>${displayName}</td>
                     <td>${Number(item.experience || 0).toFixed(1)} yrs</td>
                     <td>${skills || "N/A"}</td>
                     <td>${Array.isArray(item.missing_skills) && item.missing_skills.length ? item.missing_skills.join(", ") : "All required skills matched"}</td>
                     <td>${Number(item.final_score || 0).toFixed(2)}%</td>
                     <td>
-                        <span class="status ${String(item.status || "Rejected").toLowerCase()}">${item.status || "Rejected"}</span>
+                        <span class="status ${statusClass}" ${errorTooltip}>
+                            ${item.status || "Rejected"}
+                            ${errorTooltip ? ' <span style="font-size:12px">ℹ️</span>' : ''}
+                        </span>
                     </td>
                     <td>
                         <button class="download-btn" onclick="downloadResume('${item.resume_file || item.resume_url || ""}')">
@@ -551,62 +617,63 @@ document.addEventListener("DOMContentLoaded", async function () {
                         </button>
                     </td>
                 `;
-                tableBody.appendChild(row);
-            });
+            tableBody.appendChild(row);
+          });
         } catch (error) {
-            console.error("Error loading dashboard:", error);
+          console.error("Error loading dashboard:", error);
         }
-    }
+      }
 
-    await loadDashboard();
-    setInterval(loadDashboard, 3000);
-});
+      await loadDashboard();
+      setInterval(loadDashboard, 3000);
+    });
 
-function downloadResume(url) {
-    if (!url) {
+    function downloadResume(url) {
+      if (!url) {
         alert("Resume file not found!");
         return;
+      }
+      window.open(url, "_blank");
     }
-    window.open(url, "_blank");
-}
 
-async function bulkDownload() {
-    const hrId = localStorage.getItem("hr_id");
-    if (!hrId) {
+    async function bulkDownload() {
+      const hrId = localStorage.getItem("hr_id");
+      if (!hrId) {
         window.location.href = "/login";
         return;
+      }
+      window.open(`/dashboard/download-selected?hr_id=${encodeURIComponent(hrId)}`, "_blank");
     }
-    window.open(`/dashboard/download-selected?hr_id=${encodeURIComponent(hrId)}`, "_blank");
-}
 
-async function bulkDownloadPending() {
-    const hrId = localStorage.getItem("hr_id");
-    if (!hrId) {
+    async function bulkDownloadPending() {
+      const hrId = localStorage.getItem("hr_id");
+      if (!hrId) {
         window.location.href = "/login";
         return;
+      }
+      window.open(`/dashboard/download-pending?hr_id=${encodeURIComponent(hrId)}`, "_blank");
     }
-    window.open(`/dashboard/download-pending?hr_id=${encodeURIComponent(hrId)}`, "_blank");
-}
 
-async function bulkDownloadRejected() {
-    const hrId = localStorage.getItem("hr_id");
-    if (!hrId) {
+    async function bulkDownloadRejected() {
+      const hrId = localStorage.getItem("hr_id");
+      if (!hrId) {
         window.location.href = "/login";
         return;
+      }
+      window.open(`/dashboard/download-rejected?hr_id=${encodeURIComponent(hrId)}`, "_blank");
     }
-    window.open(`/dashboard/download-rejected?hr_id=${encodeURIComponent(hrId)}`, "_blank");
-}
 
-document.getElementById("logout-link").addEventListener("click", function (e) {
-    e.preventDefault();
-    localStorage.removeItem("hr_email");
-    localStorage.removeItem("hr_id");
-    localStorage.removeItem("criteria");
-    localStorage.removeItem("screening_result");
-    window.location.href = "/auth/logout";
-});
-</script>
-<footer class="hl-footer">© 2025 HireLens AI. Built by Jyoti Gola.</footer>
+    document.getElementById("logout-link").addEventListener("click", function (e) {
+      e.preventDefault();
+      localStorage.removeItem("hr_email");
+      localStorage.removeItem("hr_id");
+      localStorage.removeItem("criteria");
+      localStorage.removeItem("screening_result");
+      window.location.href = "/auth/logout";
+    });
+  </script>
+  <footer class="hl-footer">© 2025 HireLens AI. Built by Jyoti Gola.</footer>
 
 </body>
+
 </html>

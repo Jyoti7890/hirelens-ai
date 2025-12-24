@@ -204,7 +204,7 @@ async def upload_resumes(
                         "hr_id": hr_id,
                         "resume_file": resume_url, # Might be None if upload failed
                         "resume_storage_path": storage_path,
-                        "extracted_text": text if text else None, # Might be partial
+                        "extracted_text": f"PROCESSING ERROR: {str(e)}", # Store error for visibility
                         "experience": 0,
                         "skills_score": 0,
                         "jd_similarity_score": 0,

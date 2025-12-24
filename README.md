@@ -5,18 +5,15 @@
 HireLens AI is a FastAPI-based hiring tool that automates resume screening.  
 HRs can upload resumes, set job criteria, and instantly get scored results through a web dashboard.
 
-I built HireLens AI to learn how to ship a real backend that actually works in production. It’s a FastAPI app that serves a simple HTML/CSS/JS frontend, lets an HR define job criteria, upload resumes (PDF/DOCX/TXT/ZIP), scores them, and shows results on a dashboard. I used Supabase for the database and storage, and added OTP email for signup/verification.
-
-Locally everything worked with SMTP, but when I deployed to Render, I learned that outbound SMTP is blocked. My fix was to switch from SMTP to Resend’s HTTP API for sending OTP emails. Now OTP emails work both locally and on Render without any special networking.
+I built HireLens AI to learn how to ship a real backend that actually works in production. It’s a FastAPI app that serves a simple HTML/CSS/JS frontend, lets an HR define job criteria, upload resumes (PDF/DOCX/TXT/ZIP), scores them, and shows results on a dashboard. I used Supabase for the database and storage, and added email for signup/verification.
 
 Supabase tables I’m using:
 - `users` — basic email/password
-- `temp_otp` — email + OTP + expiry
 - `job_criteria` — saved hiring criteria per HR
 - `resumes` — processed resume data, scores, status, storage paths
 
 ## 2. Features
-- OTP signup and verification
+- Signup and verification
 - Save job criteria (skills, min experience, department, min match score)
 - Upload single files or a ZIP of multiple resumes
 - Auto text extraction, skill matching, experience parsing, JD similarity, and final score
@@ -28,7 +25,6 @@ Supabase tables I’m using:
 ## 3. Tech Stack
 - FastAPI + Uvicorn
 - Supabase (authentication, database, storage)
-- Resend API for OTP emails (HTTP based)
 - HTML, CSS, JavaScript (no framework)
 - Deployed on Render (Web Service)
 
@@ -51,7 +47,6 @@ frontend/
   index.html
   login.html
   signup.html
-  otp.html
   input.html
   upload.html
   dashboard.html
@@ -71,9 +66,6 @@ requirements.txt
 ### Signup Page
 ![Signup Page](screenshots/signup.png)
 
-### OTP Verification
-![OTP Verification](screenshots/otp.png)
-
 ### Input Job Criteria
 ![Input Job Criteria](screenshots/input.png)
 
@@ -82,6 +74,9 @@ requirements.txt
 
 ### Dashboard
 ![Dashboard](screenshots/dashboard.png)
+
+### Analytical Page
+![Analytical Page](screenshots/analytical.png)
 
 ## 6. Live Demo
 - Render live link: https://hirelens-ai.onrender.com/
@@ -92,14 +87,6 @@ Set these in Render (Environment tab or via an Environment Group), and in `.env`
 
 - `SUPABASE_URL`
 - `SUPABASE_KEY`
-- `RESEND_API_KEY`
-- `RESEND_FROM_EMAIL`
-- `RESEND_FROM_NAME` (optional, defaults to `HireLens AI`)
-- `RESEND_BASE_URL` (optional, defaults to `https://api.resend.com`)
-- `EMAIL_TIMEOUT` (optional, e.g., `10`)
-- `FRONTEND_URL` (set if the frontend is on a different domain)
-- `ALLOWED_ORIGINS` (comma-separated list; include your frontend domain if separate)
-- `PORT` (Render sets this automatically)
 
 Notes:
 - Use Environment Variables or Environment Groups attached to the service (recommended).
@@ -121,7 +108,7 @@ Notes:
    ```
    python backend/main.py
    ```
-5. Open `http://localhost:8000/` and try the flow: signup → OTP → define criteria → upload → dashboard.
+5. Open `http://localhost:8000/` and try the flow: signup  → define criteria → upload → dashboard.
 
 ## 9. Render Deployment
 1. Create a new Render Web Service from this repository.
@@ -130,7 +117,7 @@ Notes:
    ```
    uvicorn backend.main:app --host 0.0.0.0 --port $PORT
    ```
-4. Deploy and test pages: `/`, `/login`, `/signup`, `/otp`, `/input`, `/upload`, `/dashboard`.
+4. Deploy and test pages: `/`, `/login`, `/signup`, `/input`, `/upload`, `/dashboard`.
 
 ## 10. Common Issues & Fixes
 - SMTP blocked on Render:

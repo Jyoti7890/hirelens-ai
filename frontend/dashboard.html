@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HireLens AI | Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     @keyframes gradientShift {
@@ -129,6 +130,143 @@
       cursor: pointer;
     }
   </style>
+
+  <!-- Analytics Styles -->
+  <style>
+    /* Modal Overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* Modal Content */
+    .modal-content {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      width: 90%;
+      max-width: 1000px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 20px;
+      padding: 30px;
+      position: relative;
+      box-shadow: 0 0 40px rgba(37, 99, 235, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+      color: #fff;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    /* Close Button */
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 28px;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    
+    .close-btn:hover {
+      color: #ef4444;
+    }
+
+    .analytics-header {
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 15px;
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .metric-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .metric-card h4 {
+      margin: 0 0 10px 0;
+      color: #94a3b8;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .metric-card .value {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(to right, #60a5fa, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .chart-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .chart-container {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 20px;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.05);
+      min-height: 300px;
+    }
+
+    .chart-container h5 {
+      margin: 0 0 20px 0;
+      font-size: 18px;
+      color: #e2e8f0;
+      text-align: center;
+    }
+    
+    /* Nav Button Style */
+    .nav-btn-analytics {
+      background: linear-gradient(90deg, #2563eb, #7c3aed);
+      padding: 8px 20px;
+      border-radius: 20px;
+      color: white !important;
+      font-weight: 600;
+      box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn-analytics:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(124, 58, 237, 0.6);
+      text-shadow: none !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -143,6 +281,7 @@
       <a href="/">Home</a>
       <a href="/input">Criteria</a>
       <a href="/upload">Upload</a>
+      <a href="#" onclick="openAnalytics()" class="nav-btn-analytics">Analytical Report</a>
       <a href="#" id="logout-link">Logout</a>
     </nav>
   </header>
@@ -195,7 +334,160 @@
     </div>
   </div>
 
+  <!-- Analytics Modal -->
+  <div id="analyticsModal" class="modal-overlay">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeAnalytics()">&times;</span>
+      
+      <div class="analytics-header">
+        <h2>Recruitment Analytics</h2>
+      </div>
+
+      <!-- Top Metrics -->
+      <div class="analytics-grid">
+        <div class="metric-card">
+          <h4>Total Resumes</h4>
+          <div class="value" id="an-total">0</div>
+        </div>
+        <div class="metric-card">
+          <h4>Selected</h4>
+          <div class="value" id="an-selected">0</div>
+        </div>
+        <div class="metric-card">
+          <h4>Rejected</h4>
+          <div class="value" id="an-rejected">0</div>
+        </div>
+        <div class="metric-card">
+          <h4>Avg Final Score</h4>
+          <div class="value" id="an-avg-score">0%</div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="chart-section">
+        <div class="chart-container">
+          <h5>Selection vs Rejection</h5>
+          <canvas id="statusChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <h5>Top Matched Skills</h5>
+          <canvas id="skillsChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- JD Match Progress -->
+      <div class="chart-container" style="margin-top: 20px; text-align: center;">
+         <h5>Average JD Match Score</h5>
+         <div style="position: relative; height: 30px; background: rgba(255,255,255,0.1); border-radius: 15px; margin: 20px 0; overflow: hidden;">
+             <div id="jd-match-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #06b6d4, #2563eb); text-align: right; padding-right: 10px; line-height: 30px; font-weight: bold; transition: width 1s ease;">
+                 <span id="jd-match-text">0%</span>
+             </div>
+         </div>
+         <p style="color: #94a3b8; font-size: 14px;">Average match percentage of all analyzed resumes against the job description.</p>
+      </div>
+
+    </div>
+  </div>
+
 <script>
+// Analytics Logic
+let statusChartInstance = null;
+let skillsChartInstance = null;
+
+async function openAnalytics() {
+    const hrId = localStorage.getItem("hr_id") || document.cookie.split("; ").find(row => row.startsWith("hr_id="))?.split("=")[1];
+    
+    if (!hrId) {
+        alert("Please login first");
+        return;
+    }
+
+    document.getElementById("analyticsModal").classList.add("active");
+    
+    try {
+        const res = await fetch(`/dashboard/analytics?hr_id=${encodeURIComponent(hrId)}`);
+        const data = await res.json();
+        
+        // Update Metrics
+        document.getElementById("an-total").textContent = data.summary.total;
+        document.getElementById("an-selected").textContent = data.summary.selected;
+        document.getElementById("an-rejected").textContent = data.summary.rejected;
+        document.getElementById("an-avg-score").textContent = data.summary.avg_score + "%";
+
+        // Update JD Bar
+        const jdScore = data.charts.avg_jd_match;
+        const jdBar = document.getElementById("jd-match-bar");
+        jdBar.style.width = `${jdScore}%`;
+        document.getElementById("jd-match-text").textContent = `${jdScore}%`;
+
+        // Render Charts
+        renderStatusChart(data.charts.status_distribution);
+        renderSkillsChart(data.charts.top_skills);
+
+    } catch (e) {
+        console.error("Analytics Load Error", e);
+        alert("Failed to load analytics data.");
+    }
+}
+
+function closeAnalytics() {
+    document.getElementById("analyticsModal").classList.remove("active");
+}
+
+function renderStatusChart(dist) {
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    
+    if (statusChartInstance) statusChartInstance.destroy();
+
+    statusChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Selected', 'Rejected', 'Pending'],
+            datasets: [{
+                data: [dist.selected, dist.rejected, dist.pending],
+                backgroundColor: ['#4ade80', '#f87171', '#fcd34d'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom', labels: { color: 'white' } }
+            }
+        }
+    });
+}
+
+function renderSkillsChart(skills) {
+    const ctx = document.getElementById('skillsChart').getContext('2d');
+    
+    if (skillsChartInstance) skillsChartInstance.destroy();
+
+    skillsChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: skills.map(s => s.skill),
+            datasets: [{
+                label: 'Mention Count',
+                data: skills.map(s => s.count),
+                backgroundColor: '#60a5fa',
+                borderColor: '#3b82f6',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                x: { ticks: { color: 'white' }, grid: { display: false } }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", async function () {
     function getCookie(name) {
         const v = document.cookie.split("; ").find(row => row.startsWith(name + "="));

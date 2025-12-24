@@ -73,35 +73,33 @@ def signup(email: str = Form(...), password: str = Form(...)):
 @router.post("/login")
 def login(email: str = Form(...), password: str = Form(...)):
     try:
-        # 1. Check if user exists (User Request: "User not found. Please signup first.")
-        user_check = supabase.table("users").select("id").eq("email", email).execute()
-        if not user_check.data:
+        # 1. Fetch user data from Supabase user table by email
+        user_res = supabase.table("users").select("*").eq("email", email).execute()
+        
+        # 2. Check existence
+        if not user_res.data:
              return HTMLResponse(
-                "<script>alert('User not found. Please signup first.'); window.location='/signup';</script>"
+                "<script>alert('Signup first'); window.location='/signup';</script>"
             )
+        
+        user = user_res.data[0]
+        stored_password = user.get("password")
 
-        # 2. Authenticate
-        try:
-            res = supabase.auth.sign_in_with_password({
-                "email": email,
-                "password": password
-            })
-        except Exception as e:
-            # Assume error is bad password
-            logger.warning(f"Login failed for {email}: {e}")
+        # 3. Compare Password (Exact match as requested)
+        # Note: In production, hashing is recommended, but prompt asked for this logic
+        # strictly unless stored password is known to be hashed.
+        # Based on signup logic, it is stored "as is".
+        if stored_password == password:
+            # Match -> Redirect immediately
+            response = RedirectResponse(url="/input", status_code=302)
+            response.set_cookie("hr_email", email, httponly=True, samesite="Lax")
+            response.set_cookie("hr_id", email, httponly=True, samesite="Lax")
+            return response
+        else:
+            # Mismatch -> Alert "Wrong password"
             return HTMLResponse(
-                "<script>alert('Incorrect password.'); window.location='/login';</script>"
+                "<script>alert('Wrong password'); window.location='/login';</script>"
             )
-
-        # 3. Success -> Redirect
-        response = RedirectResponse(url="/input", status_code=302)
-        # Set cookies for existing frontend logic
-        response.set_cookie("hr_email", email, httponly=True, samesite="Lax")
-        response.set_cookie("hr_id", email, httponly=True, samesite="Lax") # Using email as hr_id per existing logic?!
-        
-        # Also store access token if needed? Existing frontend uses hr_id cookie.
-        
-        return response
 
     except Exception as e:
         logger.error(f"Login System Error: {e}")

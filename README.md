@@ -1,4 +1,4 @@
-# HireLens AI
+# HireLens AI - AI-Powered Resume Screening Platform
 
 ## 1. Project Overview
 

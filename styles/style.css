@@ -1,0 +1,43 @@
+/* --- Landing Page Styling --- */
+.hero {
+  text-align: center;
+  margin-top: 10%;
+}
+
+.hero h1 {
+  font-size: 2.2rem;
+  color: #222;
+}
+
+.hero p {
+  color: #555;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.buttons .btn, .buttons .btn-outline {
+  margin: 0 10px;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-outline {
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
+}
+
+footer {
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  color: #777;
+  font-size: 0.9rem;
+}
